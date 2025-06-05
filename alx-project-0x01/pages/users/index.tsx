@@ -1,29 +1,53 @@
-import React from 'react'
-import { UserProps } from '@/interfaces'
-import UserCard from '@/components/common/UserCard'
+import Header from "@/components/layout/Header";
+import UserCard from "@/components/common/UserCard";
+import UserModal from "@/components/common/UserModal";
+import { UserData, UserProps } from "@/interfaces";
+import { useState } from "react";
+
+const Users: React.FC<UserProps> = ({ posts }) => {
+  const [users, setUsers] = useState<UserData[]>(posts);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleAddUser = (newUser: UserData) => {
+    setUsers(prev => [...prev, { ...newUser, id: Date.now() }]);
+  };
+
+  return (
+    <div className="flex flex-col h-screen">
+      <Header />
+      <main className="p-4">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-semibold">Users</h1>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-green-600 px-4 py-2 rounded-full text-white"
+          >
+            Add User
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {users.map((user, index) => (
+            <UserCard key={index} {...user} />
+          ))}
+        </div>
+      </main>
+
+      {isModalOpen && (
+        <UserModal onClose={() => setModalOpen(false)} onSubmit={handleAddUser} />
+      )}
+    </div>
+  );
+};
 
 export async function getStaticProps() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users")
-  const posts = await response.json()
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const posts = await response.json();
 
   return {
     props: {
-      posts
-    }
-  }
-}
-
-const Users: React.FC<UserProps[]> = ({ posts }) => {
-  return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <h1 className="text-3xl font-bold text-center text-blue-900 mb-10">User Directory</h1>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map(user => (
-          <UserCard key={user.id} user={user} />
-        ))}
-      </div>
-    </div>
-  )
+      posts,
+    },
+  };
 }
 
 export default Users;
