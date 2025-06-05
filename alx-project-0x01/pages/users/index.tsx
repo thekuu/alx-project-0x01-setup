@@ -13,7 +13,7 @@ export async function getStaticProps() {
   }
 }
 
-const Users = ({ posts }: { posts: UserProps[] }) => {
+const Users: React.FC<UserProps[]> = ({ posts }) => {
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <h1 className="text-3xl font-bold text-center text-blue-900 mb-10">User Directory</h1>
@@ -26,4 +26,4 @@ const Users = ({ posts }: { posts: UserProps[] }) => {
   )
 }
 
-export default Users
+export default Users;
